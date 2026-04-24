@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claim Your Free Bundle — Limited Time</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060608;
+    --surface: #0d0d12;
+    --lime: #c6ff00;
+    --lime-dim: #8ab500;
+    --lime-glow: rgba(198,255,0,0.15);
+    --white: #f0f0f0;
+    --muted: rgba(240,240,240,0.38);
+    --red: #ff3b3b;
+    --border: rgba(198,255,0,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'IBM Plex Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CURSOR ── */
+  .cur { position:fixed;width:10px;height:10px;background:var(--lime);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s; }
+  .cur-r { position:fixed;width:36px;height:36px;border:1px solid var(--lime);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.4;transition:transform .22s; }
+
+  /* ── NOISE ── */
+  body::after {
+    content:'';position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
+    pointer-events:none;z-index:9000;opacity:.5;
+  }
+
+  /* ── ALERT BAR ── */
+  .alert-bar {
+    background: var(--lime);
+    color: var(--bg);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px;
+    position: sticky; top: 0; z-index: 500;
+  }
+  .alert-bar span { margin: 0 16px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-mesh {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 30%, rgba(198,255,0,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 60% at 85% 70%, rgba(255,59,59,0.05) 0%, transparent 55%),
+      linear-gradient(180deg, #060608 0%, #0a0a0f 100%);
+  }
+
+  .hero-grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(198,255,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(198,255,0,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 900px; text-align: center; }
+
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(255,59,59,0.4);
+    background: rgba(255,59,59,0.08);
+    padding: 6px 16px;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 32px;
+    animation: fadeUp .6s ease both;
+  }
+  .dot { width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1.2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--lime); opacity: .7;
+    margin-bottom: 20px;
+    animation: fadeUp .7s ease .05s both;
+  }
+
+  .hero-h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(52px, 10vw, 120px);
+    line-height: .95;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    color: var(--white);
+    margin-bottom: 16px;
+    animation: fadeUp .75s ease .1s both;
+  }
+
+  .hero-h1 .accent {
+    color: var(--lime);
+    text-shadow: 0 0 40px rgba(198,255,0,0.4);
+  }
+
+  .hero-h1 .stroke {
+    -webkit-text-stroke: 1.5px rgba(240,240,240,0.3);
+    color: transparent;
+  }
+
+  .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(17px, 2.5vw, 22px);
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 48px;
+    animation: fadeUp .8s ease .15s both;
+  }
+
+  /* ── COUNTDOWN ── */
+  .countdown-wrap {
+    display: flex; justify-content: center; gap: 4px;
+    margin-bottom: 48px;
+    animation: fadeUp .85s ease .2s both;
+  }
+  .cd-block {
+    background: rgba(198,255,0,0.06);
+    border: 1px solid var(--border);
+    padding: 14px 20px;
+    text-align: center;
+    min-width: 72px;
+  }
+  .cd-num {
+    font-family: 'Anton', sans-serif;
+    font-size: 36px;
+    color: var(--lime);
+    display: block;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(198,255,0,0.5);
+  }
+  .cd-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 4px; display: block; }
+  .cd-sep { font-family: 'Anton'; font-size: 32px; color: var(--lime); opacity: .3; align-self: center; }
+
+  /* ── CTA BUTTON ── */
+  .btn-claim {
+    display: inline-flex; align-items: center; gap: 14px;
+    background: var(--lime);
+    color: var(--bg);
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(18px, 2.5vw, 24px);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 22px 56px;
+    border: none;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform .15s, box-shadow .15s;
+    animation: fadeUp .9s ease .25s both;
+    text-decoration: none;
+  }
+  .btn-claim::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform .5s ease;
+  }
+  .btn-claim:hover::before { transform: translateX(100%); }
+  .btn-claim:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(198,255,0,0.35); }
+  .btn-claim:active { transform: translateY(0); }
+  .btn-arrow { font-size: 24px; }
+
+  .trust-line {
+    margin-top: 20px;
+    font-size: 11px; letter-spacing: 2px; color: var(--muted);
+    animation: fadeUp 1s ease .3s both;
+  }
+  .trust-line span { color: var(--lime); opacity: .7; }
+
+  /* ── SOCIAL PROOF TICKER ── */
+  .proof-ticker {
+    background: rgba(198,255,0,0.04);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    overflow: hidden;
+    margin: 0;
+  }
+  .proof-track {
+    display: flex; gap: 0; width: max-content;
+    animation: slide 20s linear infinite;
+    font-size: 12px; color: var(--muted); letter-spacing: 1px;
+  }
+  .proof-item { white-space: nowrap; padding: 0 40px; }
+  .proof-item strong { color: var(--lime); }
+  @keyframes slide { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── WHAT YOU GET ── */
+  .bundle-section {
+    padding: 100px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--lime); opacity: .6; margin-bottom: 12px; text-align: center;
+  }
+
+  .section-h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 64px;
+    color: var(--white);
+  }
+  .section-h2 em { color: var(--lime); font-style: normal; }
+
+  .bundle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+  }
+
+  .bundle-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .25s, transform .25s;
+  }
+  .bundle-card:hover {
+    border-color: rgba(198,255,0,0.3);
+    transform: translateY(-4px);
+  }
+  .bundle-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--lime), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .bundle-card:hover::after { opacity: 1; }
+
+  .card-value {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(198,255,0,0.1);
+    border: 1px solid rgba(198,255,0,0.2);
+    font-size: 10px; letter-spacing: 2px; color: var(--lime);
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+
+  .card-icon { font-size: 36px; margin-bottom: 20px; display: block; }
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--white); margin-bottom: 10px;
+  }
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+  /* ── TOTAL VALUE BOX ── */
+  .value-box {
+    margin: 48px auto 0;
+    max-width: 560px;
+    background: rgba(198,255,0,0.05);
+    border: 1px solid rgba(198,255,0,0.25);
+    padding: 32px 40px;
+    text-align: center;
+  }
+  .value-total-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .value-total {
+    font-family: 'Anton', sans-serif;
+    font-size: 56px; color: var(--muted);
+    text-decoration: line-through;
+    opacity: .4;
+  }
+  .value-free {
+    font-family: 'Anton', sans-serif;
+    font-size: 72px; color: var(--lime);
+    text-shadow: 0 0 40px rgba(198,255,0,0.5);
+    display: block; margin-top: 4px;
+    letter-spacing: 4px;
+  }
+  .value-disclaimer { font-size: 10px; color: var(--muted); margin-top: 12px; opacity: .6; }
+
+  /* ── STEPS ── */
+  .steps-section {
+    padding: 80px 24px;
+    background: var(--surface);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .steps-inner { max-width: 900px; margin: 0 auto; }
+  .steps-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-top: 56px;
+  }
+  .step { text-align: center; }
+  .step-num {
+    font-family: 'Anton', sans-serif;
+    font-size: 64px; color: rgba(198,255,0,0.08);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .step-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+  .step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 18px; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--lime); margin-bottom: 8px;
+  }
+  .step-text { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+  /* ── TESTIMONIALS ── */
+  .testi-section { padding: 100px 24px; max-width: 960px; margin: 0 auto; }
+  .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px; margin-top: 56px; }
+  .testi-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 32px 28px;
+    transition: border-color .25s;
+  }
+  .testi-card:hover { border-color: rgba(198,255,0,0.2); }
+  .testi-stars { color: var(--lime); font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+  .testi-quote { font-size: 13px; color: rgba(240,240,240,0.65); line-height: 1.8; margin-bottom: 20px; font-style: italic; }
+  .testi-author { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 15px; text-transform: uppercase; color: var(--white); }
+  .testi-role { font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+  /* ── BOTTOM CTA ── */
+  .bottom-cta {
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .bottom-cta-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(198,255,0,0.07) 0%, transparent 70%);
+  }
+  .bottom-h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(44px, 8vw, 100px);
+    text-transform: uppercase;
+    line-height: .95;
+    position: relative; z-index: 1;
+    margin-bottom: 24px;
+  }
+  .bottom-h2 .line2 { color: var(--lime); text-shadow: 0 0 60px rgba(198,255,0,0.4); }
+  .bottom-sub { font-size: 14px; color: var(--muted); max-width: 420px; margin: 0 auto 48px; line-height: 1.8; position: relative; z-index: 1; }
+  .scarcity {
+    display: inline-block;
+    background: rgba(255,59,59,0.1);
+    border: 1px solid rgba(255,59,59,0.3);
+    color: var(--red);
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 8px 20px;
+    margin-bottom: 32px;
+    position: relative; z-index: 1;
+    animation: scarcity-pulse 2s ease-in-out infinite;
+  }
+  @keyframes scarcity-pulse {
+    0%,100%{box-shadow:0 0 0 0 rgba(255,59,59,0.2);}
+    50%{box-shadow:0 0 0 8px rgba(255,59,59,0);}
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(6,6,8,0.94);
+    backdrop-filter: blur(16px);
+    z-index: 8000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .35s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal-box {
+    background: #0d0d12;
+    border: 1px solid rgba(198,255,0,0.2);
+    max-width: 480px; width: 100%;
+    padding: 52px 44px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 80px rgba(198,255,0,0.06);
+  }
+  .modal-corner { position:absolute; width:20px; height:20px; border-color:var(--lime); border-style:solid; opacity:.4; }
+  .modal-corner.tl { top:10px; left:10px; border-width:1px 0 0 1px; }
+  .modal-corner.br { bottom:10px; right:10px; border-width:0 1px 1px 0; }
+
+  .modal-close-btn {
+    position: absolute; top: 14px; right: 18px;
+    background: none; border: none; color: var(--muted);
+    font-size: 18px; cursor: none; transition: color .2s;
+  }
+  .modal-close-btn:hover { color: var(--lime); }
+
+  .modal-step-a, .modal-step-b { }
+  .modal-step-b { display: none; animation: fadeUp .5s ease both; }
+
+  .modal-icon-big { font-size: 52px; margin-bottom: 20px; display: block; }
+  .modal-h { font-family: 'Anton', sans-serif; font-size: 32px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .modal-h .lime { color: var(--lime); }
+  .modal-p { font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 32px; }
+
+  /* Email form */
+  .form-group { margin-bottom: 12px; text-align: left; }
+  .form-group label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+  .form-group input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color .2s;
+    cursor: none;
+  }
+  .form-group input:focus { border-color: rgba(198,255,0,0.5); }
+  .form-group input::placeholder { color: rgba(240,240,240,0.2); }
+
+  .btn-submit {
+    width: 100%;
+    background: var(--lime);
+    color: var(--bg);
+    font-family: 'Anton', sans-serif;
+    font-size: 20px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 18px;
+    border: none; cursor: none;
+    margin-top: 8px;
+    transition: opacity .2s, transform .15s;
+    position: relative; overflow: hidden;
+  }
+  .btn-submit::before {
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+    transform:translateX(-100%);transition:transform .5s;
+  }
+  .btn-submit:hover::before { transform:translateX(100%); }
+  .btn-submit:hover { opacity:.9; transform:translateY(-2px); }
+
+  .modal-fine { font-size: 9px; color: rgba(240,240,240,0.25); margin-top: 14px; line-height: 1.7; }
+
+  /* Progress bar in modal */
+  .modal-progress-wrap {
+    background: rgba(255,255,255,0.06); height: 4px; margin-bottom: 8px;
+  }
+  .modal-progress-bar {
+    height: 100%; background: var(--lime);
+    width: 0%; transition: width .4s ease;
+    box-shadow: 0 0 10px var(--lime);
+  }
+  .modal-progress-label { font-size: 9px; letter-spacing: 2px; color: var(--lime); text-align: right; margin-bottom: 24px; opacity: .7; }
+
+  /* CV Frame */
+  .cv-frame-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); text-align: left; margin-bottom: 6px; text-transform: uppercase; }
+  .cv-frame { width:100%; height:300px; border:1px solid rgba(198,255,0,0.15); }
+  .cv-frame iframe { width:100%;height:100%;border:none; }
+
+  /* Reward unlock */
+  .reward-box {
+    background: rgba(198,255,0,0.06);
+    border: 1px solid rgba(198,255,0,0.25);
+    padding: 24px; margin-bottom: 20px; text-align: left;
+  }
+  .reward-box-label { font-size: 9px; letter-spacing: 3px; color: var(--lime); text-transform: uppercase; margin-bottom: 8px; }
+  .reward-box-val { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); }
+  .btn-get-bundle {
+    display: block; width:100%;
+    background: var(--lime); color: var(--bg);
+    font-family:'Anton',sans-serif; font-size:20px; letter-spacing:2px; text-transform:uppercase;
+    padding:18px; border:none; cursor:none; text-decoration:none; text-align:center;
+    transition: opacity .2s, transform .15s;
+    margin-bottom: 10px;
+  }
+  .btn-get-bundle:hover { opacity:.88; transform:translateY(-2px); }
+
+  /* Confetti */
+  #conf { position:fixed;inset:0;pointer-events:none;z-index:9500;opacity:0;transition:opacity .4s; }
+  #conf.show { opacity:1; }
+
+  /* Footer */
+  footer {
+    text-align:center; padding:40px 24px;
+    border-top:1px solid rgba(255,255,255,0.05);
+    font-size:10px; color:rgba(240,240,240,0.2); letter-spacing:1px; line-height:2;
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  @media(max-width:600px) {
+    .modal-box { padding:36px 24px; }
+    .countdown-wrap { gap:2px; }
+    .cd-block { min-width:56px; padding:10px 12px; }
+    .cd-num { font-size:28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-r" id="curR"></div>
+<canvas id="conf"></canvas>
+
+<!-- ALERT BAR -->
+<div class="alert-bar">
+  <span>⚡ WARNING:</span> This offer expires when the timer hits zero — don't miss out
+</div>
+
+<!-- ════ HERO ════ -->
+<section class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="live-pill"><span class="dot"></span> Live Offer — Expires Soon</div>
+    <p class="hero-label">Free Bundle Drop · No Credit Card · Instant Access</p>
+    <h1 class="hero-h1">
+      Get The<br>
+      <span class="accent">$497</span> <span class="stroke">Bundle</span><br>
+      For <span class="accent">Free</span>
+    </h1>
+    <p class="hero-sub">
+      Claim your exclusive toolkit, cheatsheets & bonus training — completely free for the next few hours only.
+    </p>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-wrap">
+      <div class="cd-block"><span class="cd-num" id="cdH">00</span><span class="cd-label">Hours</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cdM">23</span><span class="cd-label">Min</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><span class="cd-num" id="cdS">59</span><span class="cd-label">Sec</span></div>
+    </div>
+
+    <button class="btn-claim" onclick="openModal()">
+      <span>Claim Free Bundle</span>
+      <span class="btn-arrow">→</span>
+    </button>
+    <p class="trust-line">🔒 Secure · <span>4,218 people</span> already claimed · No spam ever</p>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF TICKER -->
+<div class="proof-ticker">
+  <div class="proof-track" id="ticker"></div>
+</div>
+
+<!-- ════ BUNDLE CONTENTS ════ -->
+<section class="bundle-section">
+  <p class="section-tag">What's Inside</p>
+  <h2 class="section-h2">Your Free <em>Bundle</em></h2>
+  <div class="bundle-grid">
+    <div class="bundle-card">
+      <span class="card-value">$97 value</span>
+      <span class="card-icon">📋</span>
+      <p class="card-title">Master Cheatsheet Pack</p>
+      <p class="card-desc">10 done-for-you cheatsheets covering the exact strategies top earners use daily. Print & profit.</p>
+    </div>
+    <div class="bundle-card">
+      <span class="card-value">$147 value</span>
+      <span class="card-icon">🎯</span>
+      <p class="card-title">Traffic Blueprint</p>
+      <p class="card-desc">The step-by-step system to drive free targeted traffic to any offer — starting today.</p>
+    </div>
+    <div class="bundle-card">
+      <span class="card-value">$197 value</span>
+      <span class="card-icon">💰</span>
+      <p class="card-title">Conversion Swipe File</p>
+      <p class="card-desc">Copy-paste headlines, emails & scripts that convert cold visitors into buyers. Used by 6-figure earners.</p>
+    </div>
+    <div class="bundle-card">
+      <span class="card-value">$56 value</span>
+      <span class="card-icon">⚡</span>
+      <p class="card-title">Quick-Start Video Training</p>
+      <p class="card-desc">45-min bonus training showing you exactly how to set everything up in under an hour.</p>
+    </div>
+  </div>
+
+  <div class="value-box">
+    <p class="value-total-label">Total Bundle Value</p>
+    <div class="value-total">$497</div>
+    <span class="value-free">FREE</span>
+    <p class="value-disclaimer">Limited time · Claim before the timer runs out</p>
+  </div>
+</section>
+
+<!-- ════ HOW IT WORKS ════ -->
+<section class="steps-section">
+  <div class="steps-inner">
+    <p class="section-tag" style="text-align:center">How To Claim</p>
+    <h2 class="section-h2" style="text-align:center">3 Steps to <em>Access</em></h2>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">01</div>
+        <span class="step-icon">📧</span>
+        <p class="step-title">Enter Your Email</p>
+        <p class="step-text">Drop your best email in the form. Zero spam — just your bundle delivered instantly.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <span class="step-icon">✅</span>
+        <p class="step-title">Complete One Step</p>
+        <p class="step-text">Quick 30-second action that verifies your claim and unlocks full access.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <span class="step-icon">🎁</span>
+        <p class="step-title">Get Instant Access</p>
+        <p class="step-text">Download everything immediately. No waiting, no upsells, no catch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TESTIMONIALS ════ -->
+<section class="testi-section">
+  <p class="section-tag">Real Results</p>
+  <h2 class="section-h2">People Are <em>Winning</em></h2>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"I was skeptical about free stuff but this bundle genuinely changed how I approach everything. The swipe file alone is worth hundreds."</p>
+      <p class="testi-author">Marcus T.</p>
+      <p class="testi-role">Digital Marketer · Johannesburg</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Got access in 2 minutes flat. The traffic blueprint is crazy good — implemented it same day and saw results by evening."</p>
+      <p class="testi-author">Lerato M.</p>
+      <p class="testi-role">Online Entrepreneur · Pretoria</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"This is the kind of value people usually charge $500 for. I've already shared it with my entire team. Do NOT miss this."</p>
+      <p class="testi-author">Sipho K.</p>
+      <p class="testi-role">Affiliate Marketer · Cape Town</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════ BOTTOM CTA ════ -->
+<section class="bottom-cta">
+  <div class="bottom-cta-bg"></div>
+  <div class="scarcity">⚠ Only 23 Spots Remaining Today</div>
+  <h2 class="bottom-h2">
+    Last Chance<br>
+    <span class="line2">Grab It Free</span>
+  </h2>
+  <p class="bottom-sub">The timer is running. Once it hits zero, this page disappears and the bundle goes back to full price.</p>
+  <button class="btn-claim" style="position:relative;z-index:1" onclick="openModal()">
+    Yes — I Want the Free Bundle →
+  </button>
+</section>
+
+<footer>
+  © 2025 · All Rights Reserved · This is a limited-time promotional offer<br>
+  Results not guaranteed · Individual results may vary
+</footer>
+
+<!-- ════ MODAL ════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-corner tl"></div>
+    <div class="modal-corner br"></div>
+    <button class="modal-close-btn" onclick="closeModal()">✕</button>
+
+    <!-- STEP A: Email capture + CV view -->
+    <div class="modal-step-a" id="stepA">
+      <span class="modal-icon-big">🎁</span>
+      <h3 class="modal-h">Claim Your <span class="lime">Free</span> Bundle</h3>
+      <p class="modal-p">Enter your email below, then complete the quick verification step to unlock instant access.</p>
+
+      <div class="form-group">
+        <label>Your First Name</label>
+        <input type="text" id="fname" placeholder="e.g. Lerato" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label>Your Best Email</label>
+        <input type="email" id="femail" placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <button class="btn-submit" onclick="goStepB()">Get Instant Access →</button>
+      <p class="modal-fine">🔒 100% secure. No spam. Unsubscribe anytime. By proceeding you agree to receive occasional emails.</p>
+    </div>
+
+    <!-- STEP B: View CPA offer + verify -->
+    <div class="modal-step-b" id="stepB">
+      <h3 class="modal-h" style="font-size:22px;margin-bottom:8px">One Quick Step <span class="lime">Left</span></h3>
+      <p class="modal-p" style="margin-bottom:16px">View the partner page below & complete the action — your bundle unlocks automatically.</p>
+
+      <div class="modal-progress-wrap"><div class="modal-progress-bar" id="mProg"></div></div>
+      <p class="modal-progress-label" id="mProgLabel">Loading offer…</p>
+
+      <div class="cv-frame-label">Partner Offer — Complete Action Inside</div>
+      <div class="cv-frame">
+        <iframe src="https://tpi.li/krLC3xs0VNT" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" onload="startMProgress()"></iframe>
+      </div>
+
+      <div style="background:rgba(198,255,0,0.05);border:1px solid rgba(198,255,0,0.15);padding:16px 18px;font-size:11px;color:var(--muted);line-height:1.8;text-align:left;margin:16px 0">
+        <strong style="color:var(--lime)">→ Action:</strong> Browse the page above & click confirm below once done.
+      </div>
+
+      <button class="btn-submit" onclick="unlockReward()" style="background:var(--lime)">
+        ✓ Done — Unlock My Bundle Now
+      </button>
+    </div>
+
+    <!-- STEP C: Reward -->
+    <div class="modal-step-b" id="stepC" style="display:none">
+      <span class="modal-icon-big">🔥</span>
+      <h3 class="modal-h"><span class="lime">Access</span> Unlocked!</h3>
+      <p class="modal-p">Boom — your free bundle is ready. Check your email too for a copy of everything.</p>
+
+      <div class="reward-box">
+        <p class="reward-box-label">📦 Your Bundle</p>
+        <p class="reward-box-val">Master Cheatsheet Pack + Traffic Blueprint + Conversion Swipe File + Bonus Training</p>
+      </div>
+
+      <a class="btn-get-bundle" href="https://tpi.li/krLC3xs0VNT" target="_blank" rel="noopener">
+        ↗ Download My Free Bundle
+      </a>
+      <button style="width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px;cursor:none;transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(198,255,0,0.3)';this.style.color='var(--lime)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='var(--muted)'" onclick="shareNow()">Share & Earn Bonus →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Cursor
+  const cur = document.getElementById('cur'), curR = document.getElementById('curR');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function loop(){ rx+=(mx-rx)*.14; ry+=(my-ry)*.14; curR.style.left=rx+'px'; curR.style.top=ry+'px'; requestAnimationFrame(loop); })();
+
+  // Countdown — 23 min from load
+  let end = Date.now() + (23*60+59)*1000;
+  function updateCD() {
+    const diff = Math.max(0, end - Date.now());
+    const h = Math.floor(diff/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    document.getElementById('cdH').textContent = String(h).padStart(2,'0');
+    document.getElementById('cdM').textContent = String(m).padStart(2,'0');
+    document.getElementById('cdS').textContent = String(s).padStart(2,'0');
+    if (diff > 0) setTimeout(updateCD, 1000);
+  }
+  updateCD();
+
+  // Ticker
+  const proofs = [
+    '✦ Sipho just claimed the bundle — Pretoria',
+    '✦ Lerato downloaded the swipe file — Joburg',
+    '✦ Marcus unlocked full access — Cape Town',
+    '✦ Amahle claimed free bundle — Durban',
+    '✦ 4,218 people have already claimed',
+    '✦ Thabo just verified — Pretoria',
+    '✦ Only 23 spots left today',
+    '✦ Zanele got instant access — East London',
+  ];
+  const t = document.getElementById('ticker');
+  const full = [...proofs,...proofs].join('    ');
+  t.textContent = full + '    ' + full;
+
+  // Random pop-up proof notifications (bottom left)
+  const names = ['Sipho K.','Lerato M.','Thabo N.','Zanele D.','Amahle B.','Marcus T.','Mpho S.','Nandi K.'];
+  const cities = ['Pretoria','Johannesburg','Cape Town','Durban','Soweto','Bloemfontein'];
+  function showPopup() {
+    const n = names[Math.floor(Math.random()*names.length)];
+    const c = cities[Math.floor(Math.random()*cities.length)];
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;bottom:60px;left:20px;background:#0d0d12;border:1px solid rgba(198,255,0,0.2);padding:14px 18px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:rgba(240,240,240,0.7);z-index:4000;max-width:260px;box-shadow:0 4px 24px rgba(0,0,0,0.4);transition:opacity .5s,transform .5s;opacity:0;transform:translateY(10px)';
+    el.innerHTML = `<div style="color:var(--lime);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">🎁 Just Claimed</div><strong style="color:#f0f0f0">${n}</strong> from ${c}<br><span style="opacity:.5">grabbed the free bundle</span>`;
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.opacity='1'; el.style.transform='translateY(0)'; }, 50);
+    setTimeout(() => { el.style.opacity='0'; el.style.transform='translateY(-8px)'; }, 4000);
+    setTimeout(() => el.remove(), 4600);
+    const next = 8000 + Math.random()*12000;
+    setTimeout(showPopup, next);
+  }
+  setTimeout(showPopup, 5000);
+
+  // Modal
+  function openModal() { document.getElementById('modalOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+  function goStepB() {
+    const name = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    if (!email || !email.includes('@')) { alert('Please enter a valid email to continue.'); return; }
+    document.getElementById('stepA').style.display = 'none';
+    document.getElementById('stepB').style.display = 'block';
+  }
+
+  let mpStarted = false;
+  function startMProgress() {
+    if (mpStarted) return;
+    mpStarted = true;
+    const bar = document.getElementById('mProg');
+    const lbl = document.getElementById('mProgLabel');
+    let p = 0;
+    const msgs = [[20,'Offer loading…'],[50,'Almost there…'],[80,'Ready to verify!'],[100,'Complete the action below!']];
+    let mi=0;
+    const iv = setInterval(() => {
+      p = Math.min(p + 0.6, 100);
+      bar.style.width = p + '%';
+      if (mi < msgs.length && p >= msgs[mi][0]) { lbl.textContent = msgs[mi][1]; mi++; }
+      if (p >= 100) clearInterval(iv);
+    }, 50);
+  }
+  // Auto-start progress after 1.5s fallback
+  setTimeout(() => startMProgress(), 1500);
+
+  function unlockReward() {
+    document.getElementById('stepB').style.display = 'none';
+    document.getElementById('stepC').style.display = 'block';
+    launchConfetti();
+  }
+
+  // Confetti
+  function launchConfetti() {
+    const c = document.getElementById('conf');
+    c.classList.add('show');
+    c.width = window.innerWidth; c.height = window.innerHeight;
+    const ctx = c.getContext('2d');
+    const cols = ['#c6ff00','#f0f0f0','#ff3b3b','#8ab500','#ffffff','#ffdd00'];
+    const parts = Array.from({length:140}, () => ({
+      x: Math.random()*c.width, y: -30-Math.random()*60,
+      vx: (Math.random()-.5)*5, vy: 3+Math.random()*5,
+      rot: Math.random()*360, rv: (Math.random()-.5)*8,
+      w: 7+Math.random()*7, h: 3+Math.random()*5,
+      col: cols[Math.floor(Math.random()*cols.length)], a: 1
+    }));
+    let f=0;
+    function draw() {
+      ctx.clearRect(0,0,c.width,c.height);
+      parts.forEach(p => {
+        p.x+=p.vx; p.y+=p.vy; p.rot+=p.rv;
+        if(f>90) p.a-=0.008;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+        ctx.globalAlpha=Math.max(0,p.a); ctx.fillStyle=p.col;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      });
+      f++;
+      if(f<180) requestAnimationFrame(draw);
+      else { c.classList.remove('show'); ctx.clearRect(0,0,c.width,c.height); }
+    }
+    draw();
+  }
+
+  function shareNow() {
+    if(navigator.share) navigator.share({title:'Free $497 Bundle',text:'Just grabbed this free bundle — you have to get it!',url:window.location.href});
+    else { navigator.clipboard.writeText(window.location.href); alert('Link copied! Share it to earn your bonus.'); }
+  }
+</script>
+</body>
+</html>

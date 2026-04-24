@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlock My CV — Exclusive Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-dim: #7a6030;
+    --ink: #0a0806;
+    --paper: #f5f0e8;
+    --cream: #ede8da;
+    --rust: #8b3a1a;
+    --deep: #1a1208;
+    --glow: rgba(201,168,76,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease, opacity 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.25s ease, opacity 0.3s;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.35;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(139,58,26,0.1) 0%, transparent 60%),
+      linear-gradient(160deg, #0a0806 0%, #110e06 50%, #0a0806 100%);
+  }
+
+  .hero-lines {
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.04) 60px),
+      repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.04) 60px);
+  }
+
+  .crown {
+    font-size: clamp(48px, 8vw, 96px);
+    animation: float 3s ease-in-out infinite;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--paper);
+    margin-bottom: 8px;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.9s ease 0.1s both;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dim));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(13px, 2vw, 16px);
+    color: rgba(245,240,232,0.5);
+    max-width: 480px;
+    line-height: 1.7;
+    margin: 24px auto 0;
+    position: relative; z-index: 1;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .divider {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 36px auto;
+    position: relative; z-index: 1;
+    animation: fadeUp 1s ease 0.3s both;
+  }
+
+  /* STEPS */
+  .steps-section {
+    padding: 80px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    text-align: center;
+    color: var(--paper);
+    margin-bottom: 64px;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+  }
+
+  .step-card {
+    background: rgba(245,240,232,0.03);
+    border: 1px solid rgba(201,168,76,0.12);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .step-card:hover {
+    background: rgba(201,168,76,0.06);
+    border-color: rgba(201,168,76,0.35);
+    transform: translateY(-4px);
+  }
+
+  .step-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .step-card:hover::before { opacity: 1; }
+
+  .step-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: rgba(201,168,76,0.08);
+    position: absolute;
+    top: 12px; right: 20px;
+    line-height: 1;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+  .step-card:hover .step-number { color: rgba(201,168,76,0.15); }
+
+  .step-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .step-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--gold-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .step-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.8;
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 80px 24px 120px;
+    text-align: center;
+    position: relative;
+  }
+
+  .cta-glow {
+    position: absolute;
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.12), transparent 70%);
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .reward-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: pulse-badge 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-badge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
+  }
+
+  .cta-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 900;
+    color: var(--paper);
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .cta-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: rgba(245,240,232,0.45);
+    max-width: 420px;
+    margin: 0 auto 48px;
+    line-height: 1.8;
+  }
+
+  /* MAIN CTA BUTTON */
+  .btn-unlock {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    cursor: none;
+    overflow: visible;
+  }
+
+  .btn-unlock-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, #c9a84c 0%, #f0d080 40%, #c9a84c 70%, #7a6030 100%);
+    color: var(--ink);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 20px 48px;
+    border: none;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-unlock:hover .btn-unlock-inner {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--rust), 3px 3px 20px rgba(201,168,76,0.4);
+  }
+
+  .btn-unlock::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--rust);
+    transform: translate(6px, 6px);
+    z-index: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-unlock:hover::after {
+    transform: translate(9px, 9px);
+  }
+
+  .lock-icon {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+  }
+  .btn-unlock:hover .lock-icon { transform: rotate(20deg) scale(1.2); }
+
+  /* PROGRESS + REWARD OVERLAY */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,8,6,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 8000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--deep);
+    border: 1px solid rgba(201,168,76,0.25);
+    max-width: 520px;
+    width: 100%;
+    padding: 56px 48px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 0 60px rgba(201,168,76,0.08), inset 0 1px 0 rgba(201,168,76,0.15);
+  }
+
+  .modal::before, .modal::after {
+    content: '';
+    position: absolute;
+    width: 24px; height: 24px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .modal::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+  .modal::after  { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none; border: none;
+    color: rgba(245,240,232,0.3);
+    font-size: 20px;
+    cursor: none;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--gold); }
+
+  .progress-state { display: block; }
+  .reward-state { display: none; }
+
+  .modal-icon { font-size: 48px; margin-bottom: 20px; display: block; }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--paper);
+    margin-bottom: 8px;
+  }
+
+  .modal-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: rgba(245,240,232,0.4);
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    background: rgba(245,240,232,0.06);
+    height: 6px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.4s ease;
+    position: relative;
+  }
+  .progress-bar::after {
+    content: '';
+    position: absolute; right: 0; top: -4px;
+    width: 2px; height: 14px;
+    background: var(--gold-light);
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-align: right;
+    margin-bottom: 28px;
+    opacity: 0.7;
+  }
+
+  /* CV IFRAME WRAPPER */
+  .cv-frame-wrap {
+    width: 100%;
+    height: 340px;
+    border: 1px solid rgba(201,168,76,0.2);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .cv-frame-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    opacity: 0.9;
+  }
+
+  .cv-frame-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.5;
+    text-align: left;
+    margin-bottom: 6px;
+  }
+
+  .instruction {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: rgba(245,240,232,0.55);
+    line-height: 1.7;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+
+  .instruction strong { color: var(--gold); }
+
+  .btn-verify {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 16px;
+    cursor: none;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .btn-verify:hover {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+  }
+
+  /* REWARD CONFETTI + STATE */
+  .reward-state {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .reward-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .reward-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: rgba(245,240,232,0.45);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  .reward-card {
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: left;
+  }
+
+  .reward-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  .reward-card-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--paper);
+  }
+
+  .btn-open-cv {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    color: var(--ink);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 18px;
+    text-decoration: none;
+    text-align: center;
+    cursor: none;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-open-cv:hover { opacity: 0.85; transform: translateY(-2px); }
+
+  .btn-share {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.25);
+    color: rgba(245,240,232,0.5);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px;
+    cursor: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-share:hover { border-color: rgba(201,168,76,0.5); color: var(--gold); }
+
+  /* CONFETTI CANVAS */
+  #confetti-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  #confetti-canvas.active { opacity: 1; }
+
+  /* TICKER */
+  .ticker-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(10,8,6,0.9);
+    border-top: 1px solid rgba(201,168,76,0.12);
+    padding: 10px 0;
+    overflow: hidden;
+    z-index: 100;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 60px;
+    width: max-content;
+    animation: ticker 25s linear infinite;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(201,168,76,0.4);
+    text-transform: uppercase;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* FLOATING PARTICLES */
+  .particle {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 50;
+    animation: drift linear infinite;
+    opacity: 0;
+  }
+  @keyframes drift {
+    0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(-100px) translateX(var(--dx)); opacity: 0; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .modal { padding: 40px 24px; }
+    .steps-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="crown">👑</div>
+  <p class="hero-eyebrow">Exclusive Professional Profile</p>
+  <h1 class="hero-title">My <em>Curriculum<br>Vitae</em> Awaits</h1>
+  <div class="divider"></div>
+  <p class="hero-subtitle">This isn't just a CV — it's a gateway. Complete the verification below and unlock full access, plus an exclusive reward for your time.</p>
+</section>
+
+<!-- STEPS -->
+<section class="steps-section">
+  <p class="section-label">How It Works</p>
+  <h2 class="section-title">Three steps to unlock</h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <span class="step-number">01</span>
+      <span class="step-icon">🎯</span>
+      <p class="step-heading">Click & View</p>
+      <p class="step-desc">Open the CV portal and browse the embedded profile at your own pace.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-number">02</span>
+      <span class="step-icon">✅</span>
+      <p class="step-heading">Complete the Step</p>
+      <p class="step-desc">Follow the on-screen action inside the portal. One simple interaction.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-number">03</span>
+      <span class="step-icon">🎁</span>
+      <p class="step-heading">Claim Your Reward</p>
+      <p class="step-desc">Get full CV access plus an exclusive bonus unlocked instantly for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="reward-badge">🔐 Limited Access · Reward Inside</div>
+  <h2 class="cta-heading">Ready to unlock<br>full access?</h2>
+  <p class="cta-sub">Take 60 seconds. View the CV. Complete the action. Your reward is waiting.</p>
+  <button class="btn-unlock" onclick="openModal()">
+    <div class="btn-unlock-inner">
+      <span class="lock-icon">🔓</span>
+      Unlock My CV
+    </div>
+  </button>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- OVERLAY MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- Progress State -->
+    <div class="progress-state" id="progressState">
+      <span class="modal-icon">📄</span>
+      <h3 class="modal-title">View & Complete</h3>
+      <p class="modal-desc">Browse the CV embedded below. When you're done, click "I've Reviewed It" to claim your reward.</p>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p class="progress-label" id="progressLabel">0% — Scroll to explore</p>
+
+      <div class="cv-frame-label">Live CV Preview</div>
+      <div class="cv-frame-wrap">
+        <iframe
+          id="cvFrame"
+          src="https://tpi.li/krLC3xs0VNT"
+          title="CV Preview"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          loading="lazy"
+          onload="startProgress()"
+        ></iframe>
+      </div>
+
+      <div class="instruction">
+        <strong>→ Action required:</strong> Scroll through the CV above, then click the button below once you've reviewed it. Your reward unlocks immediately.
+      </div>
+
+      <button class="btn-verify" id="verifyBtn" onclick="claimReward()">
+        I've Reviewed It — Claim My Reward →
+      </button>
+    </div>
+
+    <!-- Reward State -->
+    <div class="reward-state" id="rewardState" style="display:none">
+      <span class="modal-icon">🎉</span>
+      <h2 class="reward-title">You're In!</h2>
+      <p class="reward-sub">Thank you for taking the time. Your exclusive access is now unlocked — and here's your reward.</p>
+
+      <div class="reward-card">
+        <p class="reward-card-label">🎁 Your Reward</p>
+        <p class="reward-card-value">Full CV Access + Priority Contact</p>
+      </div>
+
+      <a class="btn-open-cv" href="https://tpi.li/krLC3xs0VNT" target="_blank" rel="noopener">
+        ↗ Open Full CV
+      </a>
+      <button class="btn-share" onclick="shareIt()">
+        Share This Page
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Particles -->
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  // Ticker
+  const words = ['Professional Profile','Curriculum Vitae','Unlocking Now','Verified Access','Exclusive Reward','Click To Begin','Your Future Hire','Full Access Inside'];
+  const t = document.getElementById('ticker');
+  const full = [...words, ...words].map(w => `✦  ${w}`).join('   ');
+  t.innerHTML = full + '   ' + full;
+
+  // Particles
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const duration = 8 + Math.random() * 14;
+    const delay    = Math.random() * 20;
+    const dx       = (Math.random() - 0.5) * 200;
+    p.style.cssText = `
+      left: ${Math.random() * 100}vw;
+      --dx: ${dx}px;
+      animation-duration: ${duration}s;
+      animation-delay: -${delay}s;
+      width: ${1 + Math.random() * 3}px;
+      height: ${1 + Math.random() * 3}px;
+      opacity: ${0.2 + Math.random() * 0.5};
+    `;
+    document.body.appendChild(p);
+  }
+
+  // Modal logic
+  let progressInterval = null;
+  let currentProgress  = 0;
+  let progressStarted  = false;
+
+  function openModal() {
+    document.getElementById('overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { if (!progressStarted) startProgress(); }, 1200);
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('active');
+    document.body.style.overflow = '';
+    clearInterval(progressInterval);
+  }
+
+  function startProgress() {
+    if (progressStarted) return;
+    progressStarted = true;
+    const bar   = document.getElementById('progressBar');
+    const label = document.getElementById('progressLabel');
+    const milestones = [
+      [0.3, '12% — Profile loading…'],
+      [0.8, '35% — Reviewing experience…'],
+      [1.5, '58% — Skills & education…'],
+      [2.5, '79% — Almost there…'],
+      [4.0, '95% — Ready to unlock!'],
+    ];
+    let mi = 0;
+    progressInterval = setInterval(() => {
+      if (currentProgress < 95) {
+        currentProgress += 0.4;
+        bar.style.width = currentProgress + '%';
+        if (mi < milestones.length && currentProgress >= milestones[mi][0] * 25) {
+          label.textContent = milestones[mi][1];
+          mi++;
+        }
+      } else {
+        clearInterval(progressInterval);
+        label.textContent = '100% — Click below to unlock!';
+        bar.style.width = '100%';
+        document.getElementById('verifyBtn').style.borderColor = 'var(--gold)';
+        document.getElementById('verifyBtn').style.color = 'var(--gold-light)';
+      }
+    }, 60);
+  }
+
+  function claimReward() {
+    clearInterval(progressInterval);
+    document.getElementById('progressState').style.display = 'none';
+    document.getElementById('rewardState').style.display   = 'block';
+    launchConfetti();
+  }
+
+  // Confetti
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    canvas.classList.add('active');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    const colors = ['#c9a84c','#f0d080','#7a6030','#ede8da','#8b3a1a','#ffffff'];
+    const pieces = Array.from({length: 120}, () => ({
+      x:  Math.random() * canvas.width,
+      y: -20 - Math.random() * 100,
+      vx: (Math.random() - 0.5) * 4,
+      vy: 2 + Math.random() * 4,
+      rot: Math.random() * 360,
+      rotV: (Math.random() - 0.5) * 6,
+      w:  6 + Math.random() * 8,
+      h:  3 + Math.random() * 5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1
+    }));
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        p.x  += p.vx; p.y += p.vy;
+        p.rot += p.rotV;
+        if (frame > 80) p.alpha -= 0.008;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      frame++;
+      if (frame < 160) requestAnimationFrame(draw);
+      else { canvas.classList.remove('active'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    }
+    draw();
+  }
+
+  function shareIt() {
+    if (navigator.share) {
+      navigator.share({ title: 'Check out this CV', url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  }
+
+  // iframe scroll tracking → advance progress
+  window.addEventListener('message', e => {
+    if (e.data && e.data.type === 'scroll') startProgress();
+  });
+</script>
+</body>
+</html>
