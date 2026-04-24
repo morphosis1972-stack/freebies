@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claim Your Free Gift — Instant Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Familjen+Grotesk:ital,wght@0,400;0,600;0,700;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #03050a;
+    --card: #080c14;
+    --orange: #ff6b00;
+    --orange-glow: rgba(255,107,0,0.18);
+    --yellow: #ffd60a;
+    --white: #f4f4f0;
+    --muted: rgba(244,244,240,0.4);
+    --border: rgba(255,107,0,0.15);
+    --red: #ff2d55;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Familjen Grotesk', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cur { position:fixed;width:8px;height:8px;background:var(--orange);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%); }
+  .cur-r { position:fixed;width:32px;height:32px;border:1px solid rgba(255,107,0,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .2s; }
+
+  /* SCANLINES */
+  body::before {
+    content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 3px);
+  }
+
+  /* ── URGENCY BAR ── */
+  .urgency-bar {
+    background: var(--red);
+    text-align: center;
+    padding: 11px 16px;
+    position: sticky; top: 0; z-index: 600;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .ub-dot { width:8px;height:8px;background:#fff;border-radius:50%;animation:pulse-dot 1s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.5} }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 70px 20px 60px;
+    position: relative; overflow: hidden;
+  }
+
+  /* BG LAYERS */
+  .hero-bg {
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 90% 55% at 50% 20%, rgba(255,107,0,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 90%, rgba(255,214,10,0.06) 0%, transparent 55%),
+      linear-gradient(180deg, #03050a 0%, #05080f 100%);
+  }
+
+  /* ANIMATED GRID */
+  .hero-grid {
+    position:absolute;inset:0;
+    background-image: linear-gradient(rgba(255,107,0,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,107,0,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: grid-drift 20s linear infinite;
+  }
+  @keyframes grid-drift { from{background-position:0 0} to{background-position:48px 48px} }
+
+  /* FLOATING ORBS */
+  .orb {
+    position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px);
+    animation: orb-float ease-in-out infinite alternate;
+  }
+  .orb1 { width:500px;height:500px;background:rgba(255,107,0,0.07);top:-100px;right:-150px;animation-duration:9s; }
+  .orb2 { width:400px;height:400px;background:rgba(255,214,10,0.05);bottom:-80px;left:-100px;animation-duration:12s; }
+  @keyframes orb-float { from{transform:translateY(0) scale(1)} to{transform:translateY(40px) scale(1.1)} }
+
+  .hero-inner { position:relative;z-index:1;max-width:820px; }
+
+  .badge {
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid rgba(255,214,10,0.35);
+    background:rgba(255,214,10,0.07);
+    padding:7px 18px;
+    font-family:'Space Mono',monospace;
+    font-size:10px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--yellow);
+    margin-bottom:28px;
+    animation:fadeUp .5s ease both;
+  }
+  .badge-dot { width:6px;height:6px;background:var(--yellow);border-radius:50%;animation:blink 1.1s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .hero-pre {
+    font-family:'Space Mono',monospace;
+    font-size:11px;letter-spacing:4px;text-transform:uppercase;
+    color:var(--orange);opacity:.7;
+    margin-bottom:16px;
+    animation:fadeUp .55s ease .05s both;
+  }
+
+  .hero-h1 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size: clamp(60px, 12vw, 140px);
+    line-height:.92;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--white);
+    margin-bottom:12px;
+    animation:fadeUp .6s ease .1s both;
+  }
+  .hero-h1 .fire { color:var(--orange); text-shadow:0 0 60px rgba(255,107,0,0.5),0 0 120px rgba(255,107,0,0.2); }
+  .hero-h1 .outline { -webkit-text-stroke:2px rgba(244,244,240,0.2); color:transparent; }
+
+  .hero-sub {
+    font-size:clamp(16px,2.2vw,20px);
+    color:var(--muted);
+    line-height:1.7;
+    max-width:540px;
+    margin:0 auto 40px;
+    animation:fadeUp .65s ease .15s both;
+  }
+  .hero-sub strong { color:var(--white); }
+
+  /* COUNTDOWN */
+  .cd-row {
+    display:flex;justify-content:center;align-items:center;gap:6px;
+    margin-bottom:44px;
+    animation:fadeUp .7s ease .2s both;
+  }
+  .cd-unit { text-align:center; }
+  .cd-n {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(40px,6vw,64px);
+    color:var(--orange);
+    text-shadow:0 0 30px rgba(255,107,0,0.6);
+    display:block; line-height:1;
+    background:rgba(255,107,0,0.07);
+    border:1px solid rgba(255,107,0,0.2);
+    padding:8px 18px;
+    min-width:80px;
+  }
+  .cd-l { font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:5px;display:block; }
+  .cd-colon { font-family:'Bebas Neue';font-size:52px;color:rgba(255,107,0,0.3);margin:0 2px;padding-bottom:8px; }
+
+  /* MAIN CTA */
+  .cta-wrap { animation:fadeUp .75s ease .25s both; position:relative; display:inline-block; }
+
+  .btn-go {
+    display:inline-flex;align-items:center;gap:16px;
+    background:linear-gradient(135deg, var(--orange) 0%, #ff9500 100%);
+    color:#fff;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(22px,3vw,32px);
+    letter-spacing:3px;
+    text-transform:uppercase;
+    padding:22px 64px;
+    border:none;
+    text-decoration:none;
+    cursor:none;
+    position:relative;
+    overflow:hidden;
+    transition:transform .15s,box-shadow .15s;
+    box-shadow:0 8px 40px rgba(255,107,0,0.35);
+  }
+  .btn-go::before {
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+    transform:translateX(-150%);transition:transform .6s ease;
+  }
+  .btn-go:hover::before { transform:translateX(150%); }
+  .btn-go:hover { transform:translateY(-4px);box-shadow:0 20px 60px rgba(255,107,0,0.5); }
+  .btn-go:active { transform:translateY(-1px); }
+  .btn-go .arr { font-size:28px;transition:transform .2s; }
+  .btn-go:hover .arr { transform:translateX(6px); }
+
+  /* PULSE RING around button */
+  .cta-wrap::before, .cta-wrap::after {
+    content:'';position:absolute;inset:-8px;
+    border:1px solid rgba(255,107,0,0.3);
+    animation:ring-pulse 2.5s ease-in-out infinite;
+  }
+  .cta-wrap::after { inset:-16px;animation-delay:.8s;border-color:rgba(255,107,0,0.15); }
+  @keyframes ring-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0;transform:scale(1.04)} }
+
+  .no-cc {
+    margin-top:18px;
+    font-family:'Space Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--muted);
+    animation:fadeUp .8s ease .3s both;
+  }
+  .no-cc span { color:var(--yellow); }
+
+  /* ── SOCIAL PROOF ── */
+  .proof-bar {
+    background:rgba(255,107,0,0.04);
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    padding:13px 0;overflow:hidden;
+  }
+  .proof-track {
+    display:flex;gap:0;width:max-content;
+    animation:ticker 18s linear infinite;
+    font-family:'Space Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;
+  }
+  .pt-item { padding:0 48px;white-space:nowrap; }
+  .pt-item b { color:var(--orange); }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── WHAT YOU GET ── */
+  .perks {
+    padding:90px 20px;
+    max-width:960px;margin:0 auto;
+  }
+  .sec-label { font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);opacity:.6;text-align:center;margin-bottom:10px; }
+  .sec-h {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(40px,6vw,80px);
+    text-align:center;line-height:1;text-transform:uppercase;
+    margin-bottom:60px;
+  }
+  .sec-h em { color:var(--orange);font-style:normal; }
+
+  .perks-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:3px;
+  }
+  .perk {
+    background:var(--card);
+    border:1px solid rgba(255,255,255,0.04);
+    padding:36px 28px;
+    position:relative;overflow:hidden;
+    transition:border-color .25s,transform .25s;
+  }
+  .perk:hover { border-color:rgba(255,107,0,0.3);transform:translateY(-5px); }
+  .perk::before {
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--orange),transparent);
+    opacity:0;transition:opacity .3s;
+  }
+  .perk:hover::before { opacity:1; }
+  .perk-val {
+    position:absolute;top:14px;right:14px;
+    font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;
+    color:var(--yellow);border:1px solid rgba(255,214,10,0.2);
+    background:rgba(255,214,10,0.06);padding:3px 10px;text-transform:uppercase;
+  }
+  .perk-icon { font-size:34px;margin-bottom:18px;display:block; }
+  .perk-title { font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;color:var(--white); }
+  .perk-desc { font-size:13px;color:var(--muted);line-height:1.8; }
+
+  /* VALUE TOTAL */
+  .val-box {
+    max-width:500px;margin:44px auto 0;
+    background:rgba(255,107,0,0.06);
+    border:1px solid rgba(255,107,0,0.25);
+    padding:28px 36px;text-align:center;
+  }
+  .val-label { font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px; }
+  .val-was { font-family:'Bebas Neue';font-size:52px;color:var(--muted);opacity:.3;text-decoration:line-through; }
+  .val-free { font-family:'Bebas Neue';font-size:80px;color:var(--orange);text-shadow:0 0 40px rgba(255,107,0,0.5);display:block;line-height:1;letter-spacing:4px; }
+  .val-note { font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:10px;letter-spacing:1px; }
+
+  /* ── STEPS ── */
+  .steps {
+    background:var(--card);
+    border-top:1px solid rgba(255,255,255,0.04);
+    border-bottom:1px solid rgba(255,255,255,0.04);
+    padding:80px 20px;
+  }
+  .steps-inner { max-width:900px;margin:0 auto; }
+  .steps-row {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:40px;margin-top:52px;
+    position:relative;
+  }
+  .step { text-align:center; }
+  .step-n { font-family:'Bebas Neue';font-size:80px;color:rgba(255,107,0,0.07);line-height:1;margin-bottom:12px; }
+  .step-ico { font-size:30px;margin-bottom:12px;display:block; }
+  .step-t { font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:8px; }
+  .step-d { font-size:13px;color:var(--muted);line-height:1.8; }
+
+  /* ── TESTIMONIALS ── */
+  .testi { padding:80px 20px;max-width:960px;margin:0 auto; }
+  .testi-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:3px;margin-top:50px; }
+  .tc {
+    background:var(--card);border:1px solid rgba(255,255,255,0.04);
+    padding:30px 26px;transition:border-color .25s;
+  }
+  .tc:hover { border-color:rgba(255,107,0,0.2); }
+  .tc-stars { color:var(--yellow);font-size:14px;letter-spacing:3px;margin-bottom:14px; }
+  .tc-q { font-size:13px;color:rgba(244,244,240,0.6);line-height:1.8;font-style:italic;margin-bottom:18px; }
+  .tc-name { font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;text-transform:uppercase;color:var(--white); }
+  .tc-loc { font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase; }
+
+  /* ── BOTTOM CTA ── */
+  .bottom {
+    padding:100px 20px 80px;
+    text-align:center;
+    position:relative;overflow:hidden;
+  }
+  .bottom-glow {
+    position:absolute;inset:0;
+    background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(255,107,0,0.09) 0%,transparent 65%);
+  }
+  .scar {
+    display:inline-block;
+    background:rgba(255,45,85,0.1);border:1px solid rgba(255,45,85,0.35);
+    color:var(--red);
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+    padding:8px 22px;margin-bottom:28px;
+    animation:scar-pulse 2s ease-in-out infinite;
+    position:relative;z-index:1;
+  }
+  @keyframes scar-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,45,85,0.2)} 50%{box-shadow:0 0 0 10px rgba(255,45,85,0)} }
+
+  .bottom-h {
+    font-family:'Bebas Neue';
+    font-size:clamp(50px,10vw,120px);
+    line-height:.92;text-transform:uppercase;
+    margin-bottom:20px;
+    position:relative;z-index:1;
+  }
+  .bottom-h .hot { color:var(--orange);text-shadow:0 0 60px rgba(255,107,0,0.45); }
+  .bottom-h .ghost { -webkit-text-stroke:2px rgba(244,244,240,0.15);color:transparent; }
+
+  .bottom-sub { font-size:15px;color:var(--muted);max-width:440px;margin:0 auto 44px;line-height:1.8;position:relative;z-index:1; }
+
+  /* TRUST ROW */
+  .trust-row {
+    display:flex;flex-wrap:wrap;justify-content:center;gap:24px;
+    margin-top:28px;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;
+    color:var(--muted);text-transform:uppercase;
+    position:relative;z-index:1;
+  }
+  .trust-item { display:flex;align-items:center;gap:6px; }
+  .trust-item span { color:var(--orange); }
+
+  /* ── POP NOTIFICATION ── */
+  .pop-notif {
+    position:fixed;bottom:70px;left:20px;
+    background:var(--card);
+    border:1px solid rgba(255,107,0,0.25);
+    padding:14px 18px;
+    font-family:'Space Mono',monospace;font-size:11px;
+    color:rgba(244,244,240,0.7);
+    z-index:5000;max-width:270px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+    transform:translateY(10px);opacity:0;
+    transition:opacity .4s,transform .4s;
+  }
+  .pop-notif.show { opacity:1;transform:translateY(0); }
+  .pop-label { color:var(--orange);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px; }
+
+  /* BOTTOM TICKER */
+  .bot-ticker {
+    position:fixed;bottom:0;left:0;right:0;
+    background:rgba(3,5,10,0.92);
+    border-top:1px solid var(--border);
+    padding:9px 0;overflow:hidden;z-index:400;
+  }
+  .bot-track {
+    display:flex;gap:0;width:max-content;
+    animation:ticker 22s linear infinite;
+    font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(255,107,0,0.35);text-transform:uppercase;
+  }
+
+  footer { text-align:center;padding:40px 20px 60px;font-family:'Space Mono',monospace;font-size:9px;color:rgba(244,244,240,0.15);letter-spacing:1px;line-height:2.2; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+  @media(max-width:580px) {
+    .btn-go { padding:18px 36px;font-size:20px; }
+    .cd-n { min-width:62px;padding:6px 12px;font-size:38px; }
+    .trust-row { gap:14px;font-size:9px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-r" id="curR"></div>
+
+<!-- URGENCY BAR -->
+<div class="urgency-bar">
+  <span class="ub-dot"></span>
+  LIVE OFFER — Expires in <span id="ubTimer" style="font-weight:700;margin:0 4px">23:59</span> — Limited Spots Remaining
+  <span class="ub-dot"></span>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="hero-inner">
+
+    <div class="badge"><span class="badge-dot"></span> Free · No Credit Card · Instant Access</div>
+    <p class="hero-pre">Exclusive Drop — Today Only</p>
+    <h1 class="hero-h1">
+      Grab The<br>
+      <span class="fire">Free</span> <span class="outline">Bundle</span><br>
+      Right Now
+    </h1>
+    <p class="hero-sub">
+      <strong>$497 worth of tools, templates & training</strong> — unlocked completely free for the next few hours. No catch. No card. Just click.
+    </p>
+
+    <!-- COUNTDOWN -->
+    <div class="cd-row">
+      <div class="cd-unit"><span class="cd-n" id="cdH">00</span><span class="cd-l">Hours</span></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><span class="cd-n" id="cdM">23</span><span class="cd-l">Min</span></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><span class="cd-n" id="cdS">59</span><span class="cd-l">Sec</span></div>
+    </div>
+
+    <div class="cta-wrap">
+      <a class="btn-go" href="https://tpi.li/krLC3xs0VNT" target="_blank" rel="noopener">
+        Yes! Give Me Free Access
+        <span class="arr">→</span>
+      </a>
+    </div>
+    <p class="no-cc">🔒 Secure · <span>4,312 people</span> claimed today · Zero spam</p>
+
+  </div>
+</section>
+
+<!-- PROOF TICKER -->
+<div class="proof-bar">
+  <div class="proof-track" id="proofTrack"></div>
+</div>
+
+<!-- ══ WHAT YOU GET ══ -->
+<section class="perks">
+  <p class="sec-label">What's Included</p>
+  <h2 class="sec-h">Your Free <em>Bundle</em></h2>
+  <div class="perks-grid">
+    <div class="perk">
+      <span class="perk-val">$97 value</span>
+      <span class="perk-icon">📋</span>
+      <p class="perk-title">Master Cheatsheet Pack</p>
+      <p class="perk-desc">10 ready-to-use cheatsheets with the exact playbooks top earners follow every single day.</p>
+    </div>
+    <div class="perk">
+      <span class="perk-val">$147 value</span>
+      <span class="perk-icon">🎯</span>
+      <p class="perk-title">Free Traffic Blueprint</p>
+      <p class="perk-desc">Step-by-step system to flood any offer with targeted free traffic — starting within hours.</p>
+    </div>
+    <div class="perk">
+      <span class="perk-val">$197 value</span>
+      <span class="perk-icon">💰</span>
+      <p class="perk-title">Conversion Swipe File</p>
+      <p class="perk-desc">Copy-paste headlines, hooks & email scripts that turn cold visitors into buyers. Battle-tested.</p>
+    </div>
+    <div class="perk">
+      <span class="perk-val">$56 value</span>
+      <span class="perk-icon">⚡</span>
+      <p class="perk-title">Quick-Start Training</p>
+      <p class="perk-desc">45-min video walkthrough showing you exactly how to deploy everything in one sitting.</p>
+    </div>
+  </div>
+
+  <div class="val-box">
+    <p class="val-label">Total Bundle Value</p>
+    <div class="val-was">$497</div>
+    <span class="val-free">FREE</span>
+    <p class="val-note">Claim now before timer hits zero</p>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="steps">
+  <div class="steps-inner">
+    <p class="sec-label" style="text-align:center">How It Works</p>
+    <h2 class="sec-h" style="text-align:center">Done In <em>60 Seconds</em></h2>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-n">01</div>
+        <span class="step-ico">👆</span>
+        <p class="step-t">Click The Button</p>
+        <p class="step-d">Hit the big orange button on this page — takes you directly to the offer page.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <span class="step-ico">✅</span>
+        <p class="step-t">Complete One Step</p>
+        <p class="step-d">Quick 30-second action on the next page. That's all it takes to verify your spot.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <span class="step-ico">🎁</span>
+        <p class="step-t">Get Everything Free</p>
+        <p class="step-d">Instant access to the full bundle. Download it all, no waiting, no upsells.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="testi">
+  <p class="sec-label">Real People, Real Results</p>
+  <h2 class="sec-h">They <em>Claimed</em> It Too</h2>
+  <div class="testi-grid">
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-q">"I almost scrolled past this thinking it was too good to be true. Best click I've made all month. The swipe file alone is worth way more than free."</p>
+      <p class="tc-name">Marcus T.</p>
+      <p class="tc-loc">Digital Marketer · Johannesburg</p>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-q">"Claimed it in under 2 minutes. Implemented the traffic blueprint the same day. Don't overthink it — just grab it while it's still up."</p>
+      <p class="tc-name">Lerato M.</p>
+      <p class="tc-loc">Entrepreneur · Pretoria</p>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-q">"Sent this to my whole team. This is the type of value people usually gatekeep behind a $500 course. Genuinely shocked it's free."</p>
+      <p class="tc-name">Sipho K.</p>
+      <p class="tc-loc">Affiliate Marketer · Cape Town</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BOTTOM CTA ══ -->
+<section class="bottom">
+  <div class="bottom-glow"></div>
+  <div class="scar">⚠ Only 19 Free Spots Left Today</div>
+  <h2 class="bottom-h">
+    Don't<br>
+    <span class="hot">Miss</span> <span class="ghost">This</span>
+  </h2>
+  <p class="bottom-sub">The countdown is real. Once it's gone, the free access closes and it goes back to full price. Grab it now.</p>
+
+  <div class="cta-wrap" style="display:inline-block">
+    <a class="btn-go" href="https://tpi.li/krLC3xs0VNT" target="_blank" rel="noopener" style="position:relative;z-index:1">
+      Claim My Free Bundle Now
+      <span class="arr">→</span>
+    </a>
+  </div>
+
+  <div class="trust-row">
+    <div class="trust-item"><span>✓</span> No credit card</div>
+    <div class="trust-item"><span>✓</span> Instant access</div>
+    <div class="trust-item"><span>✓</span> No spam ever</div>
+    <div class="trust-item"><span>✓</span> 100% free</div>
+  </div>
+</section>
+
+<footer>
+  © 2025 · All Rights Reserved · Limited-time promotional offer<br>
+  Results not guaranteed · Individual results may vary · This is a marketing page
+</footer>
+
+<!-- BOTTOM TICKER -->
+<div class="bot-ticker"><div class="bot-track" id="botTrack"></div></div>
+
+<!-- POP NOTIFICATION CONTAINER -->
+<div class="pop-notif" id="popNotif">
+  <div class="pop-label" id="popLabel">🔥 Just Claimed</div>
+  <span id="popText"></span>
+</div>
+
+<script>
+  // ── Cursor
+  const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+  (function loop(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(loop);})();
+
+  // ── Countdown
+  const END = Date.now() + (23*60+59)*1000;
+  function tick() {
+    const d = Math.max(0, END - Date.now());
+    const h = Math.floor(d/3600000);
+    const m = Math.floor((d%3600000)/60000);
+    const s = Math.floor((d%60000)/1000);
+    const pad = n=>String(n).padStart(2,'0');
+    document.getElementById('cdH').textContent = pad(h);
+    document.getElementById('cdM').textContent = pad(m);
+    document.getElementById('cdS').textContent = pad(s);
+    document.getElementById('ubTimer').textContent = `${pad(m)}:${pad(s)}`;
+    if(d>0) setTimeout(tick,1000);
+  }
+  tick();
+
+  // ── Proof ticker
+  const items = [
+    '✦ Sipho just claimed — Pretoria',
+    '✦ Lerato got free access — Joburg',
+    '✦ Marcus downloaded the bundle — Cape Town',
+    '✦ Amahle verified her spot — Durban',
+    '✦ 4,312 claimed today',
+    '✦ Thabo unlocked access — Soweto',
+    '✦ Only 19 spots left',
+    '✦ Zanele got in — East London',
+    '✦ Free access closing soon',
+  ];
+  const build = items => items.map(i=>`<span class="pt-item">${i}</span>`).join('');
+  const doubled = [...items,...items];
+  document.getElementById('proofTrack').innerHTML = build(doubled) + build(doubled);
+
+  // ── Bottom ticker
+  const bItems = ['⚡ Limited Free Spots','🔥 Offer Expires Soon','✓ No Credit Card','🎁 Instant Access','⚡ 4,312 Claimed','🔒 100% Free','⚡ Limited Time'];
+  const bDoubled = [...bItems,...bItems,...bItems,...bItems];
+  document.getElementById('botTrack').innerHTML = bDoubled.map(i=>`<span style="padding:0 36px;white-space:nowrap">${i}</span>`).join('');
+
+  // ── Pop-up notifications
+  const names=['Sipho K.','Lerato M.','Thabo N.','Zanele D.','Amahle B.','Marcus T.','Mpho S.','Nandi K.','Bongani L.','Thandeka V.'];
+  const cities=['Pretoria','Johannesburg','Cape Town','Durban','Soweto','Bloemfontein','Port Elizabeth'];
+  const pop=document.getElementById('popNotif');
+  const popTxt=document.getElementById('popText');
+  function showPop(){
+    const n=names[Math.floor(Math.random()*names.length)];
+    const c=cities[Math.floor(Math.random()*cities.length)];
+    popTxt.innerHTML=`<strong style="color:#f4f4f0">${n}</strong> from ${c}<br><span style="opacity:.5;font-size:10px">grabbed the free bundle</span>`;
+    pop.classList.add('show');
+    setTimeout(()=>pop.classList.remove('show'),4200);
+    setTimeout(showPop, 9000+Math.random()*10000);
+  }
+  setTimeout(showPop, 4000);
+
+  // ── Decrement fake spot counter
+  let spots = 19;
+  setInterval(()=>{
+    if(spots>3 && Math.random()<0.3){
+      spots--;
+      document.querySelectorAll('.scar').forEach(el=>el.textContent=`⚠ Only ${spots} Free Spots Left Today`);
+    }
+  }, 45000);
+</script>
+</body>
+</html>
